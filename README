@@ -1,0 +1,24 @@
+
+前提
+	奠基於 iMax.Live韌體20110401
+
+功能
+	Phonetic input method for HiMedia HD300A/B (and possibly other models)
+	讓海美迪 HD300A/B (或其他可能的機種) 可以使用注音輸入法
+
+使用方式
+	將 ypInput 放在 /usr/local/bin/etc 下
+	(也就是 /usr/local/bin/etc/ypInput)
+	即可在 menu.rss 或其他地方使用
+
+	正常輸入
+		input = doModalRss("rss_file://./etc/ypInput/ypKeyboard.rss", "mediaDisplay", "search", 0);
+
+	密碼輸入 (以 * 回應)
+		input = doModalRss("rss_file://./etc/ypInput/ypPassword.rss", "mediaDisplay", "search", 0);
+
+	來取得使用者輸入的字串 (input)
+
+備註
+	ypKeyboard.rss ypPassword.rss 是由 media translate 的 keyboard.rss password.rss 修改而來
+	注音表資料來自於 http://sourceforge.net/projects/cce2k/
