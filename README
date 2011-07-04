@@ -10,7 +10,7 @@
 	由
 		https://github.com/ypchen/hdp_input
 	下載，或使用 git 取得
-		https://github.com/ypchen/hdp_input.git
+		git clone git://github.com/ypchen/hdp_input.git
 
 使用
 	將 ypInput 放在 /usr/local/bin/etc 下
