@@ -1,15 +1,14 @@
-
 前提
-	奠基於 iMax.Live韌體20110401
+	奠基於 iMax.Live 韌體 20110401
 
 功能
 	Phonetic input method for HiMedia HD300A/B (and possibly other models)
-	讓海美迪 HD300A/B (或其他可能的機種) 可以使用注音輸入法
+	讓海美迪 HD300A/B (或其他可能機種) 可以使用注音輸入以媮入正體字與簡體字
 
 取得
 	由
 		https://github.com/ypchen/hdp_input
-	下載，或使用 git 取得
+	下載，或使用 git clone 取得
 		git clone git://github.com/ypchen/hdp_input.git
 
 使用
@@ -25,6 +24,15 @@
 
 	來取得使用者輸入的字串 (input)
 
+範例
+	在原本的 searchVideo.rss 中，將 PPS 搜尋項目中，取得使用者字串輸入部分，
+	由
+		input = getInput("輸入關鍵字詞");
+	改成
+		input = doModalRss("rss_file://./etc/ypInput/ypKeyboard.rss", "mediaDisplay", "search", 0);
+	就能夠利用本模組以注音輸入簡體字的功能，在 PPS 上進行視訊搜尋
+
 備註
-	ypKeyboard.rss ypPassword.rss 是由 media translate 的 keyboard.rss password.rss 修改而來
-	注音表資料來自於 http://sourceforge.net/projects/cce2k/
+	1. ypKeyboard.rss ypPassword.rss 是由 media translate 的 keyboard.rss password.rss 修改而來
+	2. 注音表資料來自於 http://sourceforge.net/projects/cce2k/
+	3. Unicode 正體轉簡體程式來自於 http://www.php5.idv.tw/sample/dbcconv.zip
