@@ -25,12 +25,81 @@
 	來取得使用者輸入的字串 (input)
 
 範例
-	在原本的 searchVideo.rss 中，將 PPS 搜尋項目中，取得使用者字串輸入部分，
+	1. 在原本的 searchVideo.rss 中，將 PPS 搜尋項目中，取得使用者字串輸入部分，
 	由
 		input = getInput("輸入關鍵字詞");
 	改成
 		input = doModalRss("rss_file://./etc/ypInput/ypKeyboard.rss", "mediaDisplay", "search", 0);
 	就能夠利用本模組以注音輸入簡體字的功能，在 PPS 上進行視訊搜尋
+	2. 使用以下的項目，即可利用 HDPfans 或 HAOIMS 的搜尋功能來搜尋 PPTV、優酷等多處網站:
+		<item>
+			<title>HDPfans: 全網搜索</title>
+			<onClick>
+				/* input = getInput("Enter a keyword"); */
+				input = doModalRss("rss_file://./etc/ypInput/ypKeyboard.rss", "mediaDisplay", "search", 0);
+				if (input != null) {
+					keyword = urlEncode(input);
+					searchUrl = "http://tv.hdpfans.com:80/sp_search.php?name=" + keyword;
+					sPath = "/usr/local/etc/dvdplayer/";
+					searchPath=sPath+"hdpfans_search.dat";
+					searchArray=readStringFromFile(searchPath);
+					if (getStringArrayAt(searchArray, 19) != null) {
+						searchArray = deleteStringArrayAt(searchArray, 0);
+					}
+					k=0;
+					while (getStringArrayAt(searchArray, k) != null) {
+						title=getStringArrayAt(searchArray, k);
+						if(title == input){
+							searchArray = deleteStringArrayAt(searchArray, k);
+						}
+						else{
+							k=k+1;
+						}
+					}
+					searchArray=pushBackStringArray(searchArray, input);
+					writeStringToFile(searchPath,searchArray);
+					searchUrl;
+				}
+				else {
+					redrawDisplay();
+				}
+			</onClick>
+			<mediaDisplay />
+		</item>
+		<item>
+			<title>HAOIMS: 我要搜索</title>
+			<onClick>
+				/* input = getInput("Enter a keyword"); */
+				input = doModalRss("rss_file://./etc/ypInput/ypKeyboard.rss", "mediaDisplay", "search", 0);
+				if (input != null) {
+				    keyword = urlEncode(input);
+				    searchUrl = "http://ims.haoims.com/ims/search.php?q=chl-search-word-" + keyword;
+					sPath = "/usr/local/etc/dvdplayer/";
+					searchPath=sPath+"haoims_search.dat";
+					searchArray=readStringFromFile(searchPath);
+					if (getStringArrayAt(searchArray, 19) != null) {
+						searchArray = deleteStringArrayAt(searchArray, 0);
+					}
+					k=0;
+					while (getStringArrayAt(searchArray, k) != null) {
+						title=getStringArrayAt(searchArray, k);
+						if(title==input) {
+							searchArray = deleteStringArrayAt(searchArray, k);
+						}
+						else {
+							k=k+1;
+						}
+					}
+					searchArray=pushBackStringArray(searchArray, input);
+					writeStringToFile(searchPath,searchArray);
+					searchUrl;
+				}
+				else {
+				    redrawDisplay();
+				}
+			</onClick>
+			<mediaDisplay />
+		</item>
 
 備註
 	1. ypKeyboard.rss ypPassword.rss 是由 media translate 的 keyboard.rss password.rss 修改而來

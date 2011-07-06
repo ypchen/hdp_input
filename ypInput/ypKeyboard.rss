@@ -116,7 +116,7 @@
 		widthPC="80" heightPC="5"
 		fontSize="16"
 		backgroundColor="-1:-1:-1" foregroundColor="140:140:140">
-		[信息(大小注)]切換大小寫與輸入法; [選時(Go)]完成一個字; [重覆]重覆上個字(元)
+		[重覆]重覆上個字(母); [信息(Go)]完成一個字; [選時(大小正簡)]切換輸入法
 	</text>
 
 	<itemDisplay>
@@ -205,7 +205,7 @@
 				postMessage("return");
 				ret = "true";
 			}
-			else if (userInput == "display") {
+			else if (userInput == "video_search") {
 				PHinputTextCount = 0;
 				PHinputTextArray = null;
 				PHinputText = "";
@@ -242,7 +242,7 @@
 				redrawDisplay();
 				ret = "true";
 			}
-			else if ((userInput == "video_search") &amp;&amp; (PHinputTextCount &gt; 0)) {
+			else if ((userInput == "display") &amp;&amp; (PHinputTextCount &gt; 0)) {
 
 				if (currentPage == 3)
 					fileChar = "./etc/ypInput/ypPhoneticCHT/i=" + PHinputText + ".str";
@@ -351,7 +351,7 @@
 		idx = getFocusItemIndex();
 		itemTitle = getStringArrayAt(itemTitleArray, idx-(-1));
 
-		if (itemTitle == "小") {
+		if ((currentPage != 0) &amp;&amp; (itemTitle == "小")) {
 			currentPage    = 1;
 			itemTitleArray = itemTitleArrayP1;
 			/* Fixed itemSize for the static 4 pages */
@@ -362,7 +362,7 @@
 			PHinputTextArray = null;
 			PHinputText = "";
 		}
-		else if (itemTitle == "大") {
+		else if ((currentPage != 0) &amp;&amp; (itemTitle == "大")) {
 			currentPage    = 2;
 			itemTitleArray = itemTitleArrayP2;
 			/* Fixed itemSize for the static 4 pages */
@@ -373,7 +373,7 @@
 			PHinputTextArray = null;
 			PHinputText = "";
 		}
-		else if (itemTitle == "正") {
+		else if ((currentPage != 0) &amp;&amp; (itemTitle == "正")) {
 			currentPage    = 3;
 			itemTitleArray = itemTitleArrayP3;
 			/* Fixed itemSize for the static 4 pages */
@@ -384,7 +384,7 @@
 			PHinputTextArray = null;
 			PHinputText = "";
 		}
-		else if (itemTitle == "簡") {
+		else if ((currentPage != 0) &amp;&amp; (itemTitle == "簡")) {
 			currentPage    = 4;
 			itemTitleArray = itemTitleArrayP4;
 			/* Fixed itemSize for the static 4 pages */
@@ -457,7 +457,14 @@
 
 <channel>
 
-	<title>字串輸入</title>
+	<title>
+		<script>
+			if (isPasswordMode == 1)
+				"密碼輸入";
+			else
+				"字串輸入";
+		</script>
+	</title>
 
 	<itemSize>
 		<script>
