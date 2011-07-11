@@ -2,8 +2,8 @@
 	奠基於 iMax.Live 韌體 20110401
 
 功能
-	Phonetic input method for HiMedia HD300A/B (and possibly other models)
-	讓海美迪 HD300A/B (或其他可能機種) 可以使用注音輸入以輸入正體字與簡體字
+	Input methods for HiMedia HD300A/B (and possibly other models)
+	讓海美迪 HD300A/B (或其他可能機種) 可以使用注音和速成來輸入正體字與簡體字
 
 取得
 	由
@@ -30,7 +30,7 @@
 		input = getInput("輸入關鍵字詞");
 	改成
 		input = doModalRss("rss_file://./etc/ypInput/ypKeyboard.rss", "mediaDisplay", "search", 0);
-	就能夠利用本模組以注音輸入簡體字的功能，在 PPS 上進行視訊搜尋
+	就能夠利用本模組以注音或速成輸入簡體字的功能，在 PPS 上進行視訊搜尋
 	2. 使用以下的項目，即可利用 HDPfans 或 HAOIMS 的搜尋功能來搜尋 PPTV、優酷等多處網站:
 		<item>
 			<title>HDPfans: 全網搜索</title>
@@ -105,3 +105,4 @@
 	1. ypKeyboard.rss ypPassword.rss 是由 media translate 的 keyboard.rss password.rss 修改而來
 	2. 注音表資料來自於 http://sourceforge.net/projects/cce2k/
 	3. Unicode 正體轉簡體程式來自於 http://www.php5.idv.tw/sample/dbcconv.zip
+	4. 倉頡碼資料來自於 http://www.chinesecj.com/newsoftware/index2.php?Type=code
