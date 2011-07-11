@@ -4,6 +4,7 @@
 <!-- 此 rss 檔是由 media translate 的 keyboard.rss password.rss 修改而來 -->
 <!-- 注音表資料來自於 http://sourceforge.net/projects/cce2k/ -->
 <!-- Unicode 正體轉簡體程式來自於 http://www.php5.idv.tw/sample/dbcconv.zip -->
+<!-- 倉頡碼資料來自於 http://www.chinesecj.com/newsoftware/index2.php?Type=code -->
 <mediaDisplay name="photoView"
 	rowCount="4"
 	columnCount="12"
@@ -39,9 +40,9 @@
 	<idleImage>image/busy8.png</idleImage>
 
 	<text redraw="no" align="left"
-		offsetXPC="5" offsetYPC="0"
+		offsetXPC="5" offsetYPC="2"
 		widthPC="90" heightPC="15"
-		fontSize="30"
+		fontSize="26"
 		backgroundColor="-1:-1:-1" foregroundColor="200:200:200">
 		<script>
 			getPageInfo("pageTitle") + inputMethod + specialMsg;
@@ -80,7 +81,7 @@
 						counter += 1;
 					}
 					if (PHinputTextCount &gt; 0)
-						print(inputPassword + "_  {注音: " + PHinputText + "_}");
+						print(inputPassword + "_  {" + inputCodeStr + ": " + PHinputText + "_}");
 					else
 						print(inputPassword + "_");
 				}
@@ -90,14 +91,14 @@
 			}
 			else {
 				if (PHinputTextCount &gt; 0)
-					print(inputText + "_  {注音: " + PHinputText + "_}");
+					print(inputText + "_  {" + inputCodeStr + ": " + PHinputText + "_}");
 				else
 					print(inputText + "_");
 			}
 		</script>
 		<foregroundColor>
 			<script>
-				if (firstUse == 1) "80:80:80";
+				if (firstUse == 1) "110:110:110";
 				else "200:200:200";
 			</script>
 		</foregroundColor>
@@ -116,7 +117,7 @@
 		widthPC="80" heightPC="5"
 		fontSize="16"
 		backgroundColor="-1:-1:-1" foregroundColor="140:140:140">
-		[重覆]重覆上個字(母); [信息(Go)]完成一個字; [選時(大小正簡)]切換輸入法
+		[重覆]重覆上個字(母); [信息(Go)]完成一個字; [選時(切)]切換輸入法
 	</text>
 
 	<itemDisplay>
@@ -160,12 +161,23 @@
 				inputNumber = "9";
 			else if (userInput == "zero" || userInput == "0")
 				inputNumber = "0";
-			else if (userInput == "pagedown" || userInput == "PD")
+			else if (userInput == "pagedown")
 				inputNumber = " ";
 			else if (userInput == "video_repeat")
 				inputNumber = lastItemTitle;
-			else if (userInput == "pageup" || userInput == "PG") {
+			else if (userInput == "pageup") {
 				firstUse = 0;
+
+				if (currentPage == 0) {
+					currentPage    = prevPage;
+					itemTitleArray = prevItemTitleArray;
+					inputCodeStr   = prevInputCodeStr;
+					inputModeStr   = prevInputModeStr;
+					inputMethod    = prevInputMethod;
+					/* Fixed itemSize for all the static pages */
+					itemSize       = 48;
+				}
+
 				if (PHinputTextCount &gt; 0) {
 					PHinputTextCount -= 1;
 					PHinputTextArray = deleteStringArrayAt(PHinputTextArray, PHinputTextCount);
@@ -213,30 +225,56 @@
 				if (currentPage == 1) {
 					currentPage    = 2;
 					itemTitleArray = itemTitleArrayP2;
-					/* Fixed itemSize for the static 4 pages */
+					/* Fixed itemSize for all the static pages */
 					itemSize        = 48;
-					inputMethod     = " [大寫]";
+					inputCodeStr    = "英文";
+					inputModeStr    = "大寫";
+					inputMethod     = " [" + inputCodeStr + inputModeStr + "]";
 				}
 				else if (currentPage == 2) {
 					currentPage    = 3;
 					itemTitleArray = itemTitleArrayP3;
-					/* Fixed itemSize for the static 4 pages */
+					/* Fixed itemSize for all the static pages */
 					itemSize        = 48;
-					inputMethod     = " [正體]";
+					inputCodeStr    = "注音";
+					inputModeStr    = "簡體";
+					inputMethod     = " [" + inputCodeStr + inputModeStr + "]";
 				}
 				else if (currentPage == 3) {
 					currentPage    = 4;
 					itemTitleArray = itemTitleArrayP4;
-					/* Fixed itemSize for the static 4 pages */
+					/* Fixed itemSize for all the static pages */
 					itemSize        = 48;
-					inputMethod     = " [簡體]";
+					inputCodeStr    = "注音";
+					inputModeStr    = "正體";
+					inputMethod     = " [" + inputCodeStr + inputModeStr + "]";
 				}
 				else if (currentPage == 4) {
+					currentPage    = 5;
+					itemTitleArray = itemTitleArrayP5;
+					/* Fixed itemSize for all the static pages */
+					itemSize        = 48;
+					inputCodeStr    = "速成";
+					inputModeStr    = "簡體";
+					inputMethod     = " [" + inputCodeStr + inputModeStr + "]";
+				}
+				else if (currentPage == 5) {
+					currentPage    = 6;
+					itemTitleArray = itemTitleArrayP6;
+					/* Fixed itemSize for all the static pages */
+					itemSize        = 48;
+					inputCodeStr    = "速成";
+					inputModeStr    = "正體";
+					inputMethod     = " [" + inputCodeStr + inputModeStr + "]";
+				}
+				else if (currentPage == 6) {
 					currentPage    = 1;
 					itemTitleArray = itemTitleArrayP1;
-					/* Fixed itemSize for the static 4 pages */
+					/* Fixed itemSize for all the static pages */
 					itemSize        = 48;
-					inputMethod     = " [小寫]";
+					inputCodeStr    = "英文";
+					inputModeStr    = "小寫";
+					inputMethod     = " [" + inputCodeStr + inputModeStr + "]";
 				}
 
 				redrawDisplay();
@@ -244,15 +282,16 @@
 			}
 			else if ((userInput == "display") &amp;&amp; (PHinputTextCount &gt; 0)) {
 
-				if (currentPage == 3)
-					fileChar = "./etc/ypInput/ypPhoneticCHT/i=" + PHinputText + ".str";
-				else if (currentPage == 4)
-					fileChar = "./etc/ypInput/ypPhoneticCHS/i=" + PHinputText + ".str";
+				/* input methods start from page 3 */
+				prefixIndex = Minus(currentPage, 3);
+				fileChar = getStringArrayAt(fileCharPrefix, prefixIndex) + "i=" + PHinputText + ".str";
 
 				itemTitleArrayChar = readStringFromFile(fileChar);
 				if (itemTitleArrayChar != null) {
 					prevPage           = currentPage;
 					prevItemTitleArray = itemTitleArray;
+					prevInputCodeStr   = inputCodeStr;
+					prevInputModeStr   = inputModeStr;
 					prevInputMethod    = inputMethod;
 					currentPage        = 0;
 					itemTitleArray     = itemTitleArrayChar;
@@ -298,20 +337,32 @@
 	screenXp = 4;
 	screenYp = 3;
 
+	fileCharPrefix = null;
+	fileCharPrefix = pushBackStringArray(fileCharPrefix, "./etc/ypInput/ypPhoneticCHS/");
+	fileCharPrefix = pushBackStringArray(fileCharPrefix, "./etc/ypInput/ypPhoneticCHT/");
+	fileCharPrefix = pushBackStringArray(fileCharPrefix, "./etc/ypInput/ypCJFastCHS/");
+	fileCharPrefix = pushBackStringArray(fileCharPrefix, "./etc/ypInput/ypCJFastCHT/");
+
 	itemTitleArrayP1 = readStringFromFile("./etc/ypInput/ypDictionary_p1.str");
 	itemTitleArrayP2 = readStringFromFile("./etc/ypInput/ypDictionary_p2.str");
 	itemTitleArrayP3 = readStringFromFile("./etc/ypInput/ypDictionary_p3.str");
 	itemTitleArrayP4 = readStringFromFile("./etc/ypInput/ypDictionary_p4.str");
+	itemTitleArrayP5 = readStringFromFile("./etc/ypInput/ypDictionary_p5.str");
+	itemTitleArrayP6 = readStringFromFile("./etc/ypInput/ypDictionary_p6.str");
 
 	prevPage           = 0;
 	prevItemTitleArray = null;
+	prevInputCodeStr   = "";
+	prevInputModeStr   = "";
 	prevInputMethod    = "";
 
 	currentPage      = 1;
 	itemTitleArray   = itemTitleArrayP1;
-	/* Fixed itemSize for the static 3 pages */
+	/* Fixed itemSize for all the static pages */
 	itemSize         = 48;
-	inputMethod     = " [小寫]";
+	inputCodeStr    = "英文";
+	inputModeStr    = "小寫";
+	inputMethod     = " [" + inputCodeStr + inputModeStr + "]";
 
 	lastItemTitle    = "";
 
@@ -351,49 +402,65 @@
 		idx = getFocusItemIndex();
 		itemTitle = getStringArrayAt(itemTitleArray, idx-(-1));
 
-		if ((currentPage != 0) &amp;&amp; (itemTitle == "小")) {
-			currentPage    = 1;
-			itemTitleArray = itemTitleArrayP1;
-			/* Fixed itemSize for the static 4 pages */
-			itemSize       = 48;
-			inputMethod     = " [小寫]";
-
+		if ((currentPage != 0) &amp;&amp; (itemTitle == "切")) {
 			PHinputTextCount = 0;
 			PHinputTextArray = null;
 			PHinputText = "";
-		}
-		else if ((currentPage != 0) &amp;&amp; (itemTitle == "大")) {
-			currentPage    = 2;
-			itemTitleArray = itemTitleArrayP2;
-			/* Fixed itemSize for the static 4 pages */
-			itemSize       = 48;
-			inputMethod     = " [大寫]";
 
-			PHinputTextCount = 0;
-			PHinputTextArray = null;
-			PHinputText = "";
-		}
-		else if ((currentPage != 0) &amp;&amp; (itemTitle == "正")) {
-			currentPage    = 3;
-			itemTitleArray = itemTitleArrayP3;
-			/* Fixed itemSize for the static 4 pages */
-			itemSize       = 48;
-			inputMethod     = " [正體]";
-
-			PHinputTextCount = 0;
-			PHinputTextArray = null;
-			PHinputText = "";
-		}
-		else if ((currentPage != 0) &amp;&amp; (itemTitle == "簡")) {
-			currentPage    = 4;
-			itemTitleArray = itemTitleArrayP4;
-			/* Fixed itemSize for the static 4 pages */
-			itemSize       = 48;
-			inputMethod     = " [簡體]";
-
-			PHinputTextCount = 0;
-			PHinputTextArray = null;
-			PHinputText = "";
+			if (currentPage == 1) {
+				currentPage    = 2;
+				itemTitleArray = itemTitleArrayP2;
+				/* Fixed itemSize for all the static pages */
+				itemSize        = 48;
+				inputCodeStr    = "英文";
+				inputModeStr    = "大寫";
+				inputMethod     = " [" + inputCodeStr + inputModeStr + "]";
+			}
+			else if (currentPage == 2) {
+				currentPage    = 3;
+				itemTitleArray = itemTitleArrayP3;
+				/* Fixed itemSize for all the static pages */
+				itemSize        = 48;
+				inputCodeStr    = "注音";
+				inputModeStr    = "簡體";
+				inputMethod     = " [" + inputCodeStr + inputModeStr + "]";
+			}
+			else if (currentPage == 3) {
+				currentPage    = 4;
+				itemTitleArray = itemTitleArrayP4;
+				/* Fixed itemSize for all the static pages */
+				itemSize        = 48;
+				inputCodeStr    = "注音";
+				inputModeStr    = "正體";
+				inputMethod     = " [" + inputCodeStr + inputModeStr + "]";
+			}
+			else if (currentPage == 4) {
+				currentPage    = 5;
+				itemTitleArray = itemTitleArrayP5;
+				/* Fixed itemSize for all the static pages */
+				itemSize        = 48;
+				inputCodeStr    = "速成";
+				inputModeStr    = "簡體";
+				inputMethod     = " [" + inputCodeStr + inputModeStr + "]";
+			}
+			else if (currentPage == 5) {
+				currentPage    = 6;
+				itemTitleArray = itemTitleArrayP6;
+				/* Fixed itemSize for all the static pages */
+				itemSize        = 48;
+				inputCodeStr    = "速成";
+				inputModeStr    = "正體";
+				inputMethod     = " [" + inputCodeStr + inputModeStr + "]";
+			}
+			else if (currentPage == 6) {
+				currentPage    = 1;
+				itemTitleArray = itemTitleArrayP1;
+				/* Fixed itemSize for all the static pages */
+				itemSize        = 48;
+				inputCodeStr    = "英文";
+				inputModeStr    = "小寫";
+				inputMethod     = " [" + inputCodeStr + inputModeStr + "]";
+			}
 		}
 		else {
 			if (firstUse == 1) {
@@ -403,7 +470,7 @@
 				firstUse = 0;
 			}
 
-			if ((currentPage == 0) || (currentPage == 1) || (currentPage == 2)){
+			if (currentPage &lt; 3) {
 				inputText += itemTitle;
 				inputTextArray  = pushBackStringArray(inputTextArray, itemTitle);
 				inputTextCount -= -1;
@@ -420,26 +487,33 @@
 		if (currentPage == 0) {
 			currentPage    = prevPage;
 			itemTitleArray = prevItemTitleArray;
+			inputCodeStr   = prevInputCodeStr;
+			inputModeStr   = prevInputModeStr;
 			inputMethod    = prevInputMethod;
-			/* Fixed itemSize for the static 4 pages */
+			/* Fixed itemSize for all the static pages */
 			itemSize       = 48;
 
 			PHinputTextCount = 0;
 			PHinputTextArray = null;
 			PHinputText = "";
 		}
-		else if (((currentPage == 3) || (currentPage == 4)) &amp;&amp; (PHinputTextCount &gt; 0) &amp;&amp;
-			((itemTitle == "Go") || (itemTitle == "ˇ") || (itemTitle == "ˋ") || (itemTitle == "ˊ") || (itemTitle == "˙"))) {
-
-			if (currentPage == 3)
-				fileChar = "./etc/ypInput/ypPhoneticCHT/i=" + PHinputText + ".str";
-			else if (currentPage == 4)
-				fileChar = "./etc/ypInput/ypPhoneticCHS/i=" + PHinputText + ".str";
+		else if (
+			(((currentPage == 3) || (currentPage == 4)) &amp;&amp; (PHinputTextCount &gt; 0) &amp;&amp;
+			((itemTitle == "Go") || (itemTitle == "ˇ") || (itemTitle == "ˋ") || (itemTitle == "ˊ") || (itemTitle == "˙")))
+			||
+			(((currentPage == 5) || (currentPage == 6)) &amp;&amp;
+			((PHinputTextCount == 2) || ((PHinputTextCount &gt; 0) &amp;&amp; (itemTitle == "Go"))))
+			) {
+			/* input methods start from page 3 */
+			prefixIndex = Minus(currentPage, 3);
+			fileChar = getStringArrayAt(fileCharPrefix, prefixIndex) + "i=" + PHinputText + ".str";
 
 			itemTitleArrayChar = readStringFromFile(fileChar);
 			if (itemTitleArrayChar != null) {
 				prevPage           = currentPage;
 				prevItemTitleArray = itemTitleArray;
+				prevInputCodeStr   = inputCodeStr;
+				prevInputModeStr   = inputModeStr;
 				prevInputMethod    = inputMethod;
 				currentPage        = 0;
 				itemTitleArray     = itemTitleArrayChar;
