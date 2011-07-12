@@ -12,17 +12,44 @@
 		git clone git://github.com/ypchen/hdp_input.git
 
 使用
-	將 ypInput 放在 /usr/local/bin/etc 下
-	(也就是 /usr/local/bin/etc/ypInput)
-	即可在 menu.rss 或其他地方使用
+	1. 直接放在本機使用
+		將 ypInput 放在 /usr/local/bin/etc 下
+		(也就是 /usr/local/bin/etc/ypInput)
+		即可在 menu.rss 或其他地方使用
 
-	正常輸入
-		input = doModalRss("rss_file://./etc/ypInput/ypKeyboard.rss", "mediaDisplay", "search", 0);
+		正常輸入
+			input = doModalRss("rss_file://./etc/ypInput/ypKeyboard.rss", "mediaDisplay", "search", 0);
 
-	密碼輸入 (以 * 回應)
-		input = doModalRss("rss_file://./etc/ypInput/ypPassword.rss", "mediaDisplay", "search", 0);
+		密碼輸入 (以 * 回應)
+			input = doModalRss("rss_file://./etc/ypInput/ypPassword.rss", "mediaDisplay", "search", 0);
 
-	來取得使用者輸入的字串 (input)
+		來取得使用者輸入的字串 (input)
+
+	2. 建立自己的輸入功能網站 (透過網路比較慢些)
+		將 ypInput 裡的 *.php, *.txt, *.rss, 和四個資料目錄放在您所選定的網站目錄下
+		(就不必多一層 "ypInput" 這個目錄了)
+		然後在 *.rss 的 <onEnter> ... </onEnter> 區段的一開始，設定
+			isOnline = 1;
+		還有把 allFileRemote 設定成您網站的位址，例如:
+			allFileRemote = "http://input.your.site/your.directory/getFile.php?file=";
+		即可在 menu.rss 或其他地方使用
+
+		正常輸入
+			input = doModalRss("http://input.your.site/your.directory/ypKeyboard.rss", "mediaDisplay", "search", 0);
+
+		密碼輸入 (以 * 回應)
+			input = doModalRss("http://input.your.site/your.directory/ypPassword.rss", "mediaDisplay", "search", 0);
+
+		來取得使用者輸入的字串 (input)
+
+	3. 我直接把這組 code 建立成一個輸入功能網站，有興趣的人可以直接用用看 (透過網路比較慢些)
+		這個網站架設在免費的 web hosting 服務上，所以原則上我不會關掉它，
+		但是免費的服務通常連不上的機率也較高，這點我就無法保證大家能用得順利
+
+		位址在
+			http://ypchen.zxq.net/ypKeyboard.rss
+		和
+			http://ypchen.zxq.net/ypPassword.rss
 
 範例
 	1. 在原本的 searchVideo.rss 中，將 PPS 搜尋項目中，取得使用者字串輸入部分，
