@@ -3,13 +3,37 @@
 
 功能
 	Input methods for HiMedia HD300A/B (and possibly other models)
-	讓海美迪 HD300A/B (或其他可能機種) 可以使用注音和速成來輸入正體字與簡體字
+	讓海美迪 HD300A/B (或其他可能機種) 可以使用注音、速成、或使用者自訂輸入法來輸入正簡體字
 
 取得
 	由
 		https://github.com/ypchen/hdp_input
 	下載，或使用 git clone 取得
 		git clone git://github.com/ypchen/hdp_input.git
+
+說明
+	使用者可以自訂輸入法，可參考目前現有之英文、注音、與速成輸入法之資料與格式.
+	若要自訂輸入法，可在 ypInput/ 下創建一個目錄，目錄中至少有以下重要檔案:
+	1. 0-keys.txt
+		這個檔案定義了螢幕上 48 方塊所顯示的字元/字母
+	2. 1-info.txt
+		這個檔案定義了輸入法的行為，每行的意義如下:
+		Line 1: 除此行外之有效資料行數
+		Line 2: 輸入法名稱
+		Line 3: 輸入法模式
+		Line 4: 是否需要進行選字？(英文輸入就不必)
+		Line 5: 是否有字碼上限 (速成就是最多兩碼)，若 Line 4 為 0 則此項無意義
+		Line 6: 輸入法切換用的螢幕按鍵 (要配合 0-keys.txt 中定義的某個按鍵)
+		Line 7: 以目前所輸入的字碼進行選字的螢幕按鍵 (要配合 0-keys.txt 中定義的某個按鍵)
+		Line 8 之後: 結束輸入之字碼 (和 Line 7 不同，這些按鍵本身也是在字碼之內，可參考注音輸入)
+	3. i=*字碼*.txt (有選字的輸入法就需要這些檔案)
+		檔名由字碼構成，檔案內容則為該字碼對應的字
+		Line 1: 共多少字
+		Line 2 之後: 對應的字
+	然後再將 keyboard.rss 和 password.rss 中的某一個輸入法，換成自己的目錄即可，例如把
+			imPrefix  = pushBackStringArray(imPrefix, "3-PhoneticCHS");
+	改成
+			imPrefix  = pushBackStringArray(imPrefix, "MyOwnInputMethod");
 
 使用
 	1. 直接放在本機使用
@@ -18,10 +42,10 @@
 		即可在 menu.rss 或其他地方使用
 
 		正常輸入
-			input = doModalRss("rss_file://./etc/ypInput/ypKeyboard.rss", "mediaDisplay", "search", 0);
+			input = doModalRss("rss_file://./etc/ypInput/keyboard.rss", "mediaDisplay", "search", 0);
 
 		密碼輸入 (以 * 回應)
-			input = doModalRss("rss_file://./etc/ypInput/ypPassword.rss", "mediaDisplay", "search", 0);
+			input = doModalRss("rss_file://./etc/ypInput/password.rss", "mediaDisplay", "search", 0);
 
 		來取得使用者輸入的字串 (input)
 
@@ -35,10 +59,10 @@
 		即可在 menu.rss 或其他地方使用
 
 		正常輸入
-			input = doModalRss("http://input.your.site/your.directory/ypKeyboard.rss", "mediaDisplay", "search", 0);
+			input = doModalRss("http://input.your.site/your.directory/keyboard.rss", "mediaDisplay", "search", 0);
 
 		密碼輸入 (以 * 回應)
-			input = doModalRss("http://input.your.site/your.directory/ypPassword.rss", "mediaDisplay", "search", 0);
+			input = doModalRss("http://input.your.site/your.directory/password.rss", "mediaDisplay", "search", 0);
 
 		來取得使用者輸入的字串 (input)
 
@@ -47,23 +71,23 @@
 		但是免費的服務通常連不上的機率也較高，這點我就無法保證大家能用得順利
 
 		位址在
-			http://input.zzl.org/ypKeyboard.rss
+			http://input.zzl.org/keyboard.rss
 		和
-			http://input.zzl.org/ypPassword.rss
+			http://input.zzl.org/password.rss
 
 範例
 	1. 在原本的 searchVideo.rss 中，將 PPS 搜尋項目中，取得使用者字串輸入部分，
 	由
 		input = getInput("輸入關鍵字詞");
 	改成
-		input = doModalRss("rss_file://./etc/ypInput/ypKeyboard.rss", "mediaDisplay", "search", 0);
+		input = doModalRss("rss_file://./etc/ypInput/keyboard.rss", "mediaDisplay", "search", 0);
 	就能夠利用本模組以注音或速成輸入簡體字的功能，在 PPS 上進行視訊搜尋
 	2. 使用以下的項目，即可利用 HDPfans 或 HAOIMS 的搜尋功能來搜尋 PPTV、優酷等多處網站:
 		<item>
 			<title>HDPfans: 全網搜索</title>
 			<onClick>
 				/* input = getInput("Enter a keyword"); */
-				input = doModalRss("rss_file://./etc/ypInput/ypKeyboard.rss", "mediaDisplay", "search", 0);
+				input = doModalRss("rss_file://./etc/ypInput/keyboard.rss", "mediaDisplay", "search", 0);
 				if (input != null) {
 					keyword = urlEncode(input);
 					searchUrl = "http://tv.hdpfans.com:80/sp_search.php?name=" + keyword;
@@ -97,7 +121,7 @@
 			<title>HAOIMS: 我要搜索</title>
 			<onClick>
 				/* input = getInput("Enter a keyword"); */
-				input = doModalRss("rss_file://./etc/ypInput/ypKeyboard.rss", "mediaDisplay", "search", 0);
+				input = doModalRss("rss_file://./etc/ypInput/keyboard.rss", "mediaDisplay", "search", 0);
 				if (input != null) {
 				    keyword = urlEncode(input);
 				    searchUrl = "http://ims.haoims.com/ims/search.php?q=chl-search-word-" + keyword;
@@ -129,7 +153,7 @@
 		</item>
 
 備註
-	1. ypKeyboard.rss ypPassword.rss 是由 media translate 的 keyboard.rss password.rss 修改而來
+	1. keyboard.rss password.rss 是由 media translate 的 keyboard.rss password.rss 修改而來
 	2. 注音表資料來自於 http://sourceforge.net/projects/cce2k/
 	3. Unicode 正體轉簡體程式來自於 http://www.php5.idv.tw/sample/dbcconv.zip
 	4. 倉頡碼資料來自於 http://www.chinesecj.com/newsoftware/index2.php?Type=code
