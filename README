@@ -113,6 +113,15 @@
 				p2 是 ims.hostoi.com 上的 2-EnglishUpper
 				p3 是本機的 /usr/local/bin/etc/ypInput 裡的 4-PhoneticCHT
 				p4 是在 Dropbox user 35344989 的公開目錄 hdp_input/ypInput 裡的 6-CJFastCHT
+		(6) 以上是比較完整的使用方式，之所以要透過 getFile.php 來存取網路上資料的原因，主要是為了判斷
+			"無此字" 這件事. 因為 getFile.php 會注意 "404" (Not Found) 然後傳回 keyboard.rss 可以判斷
+			"無此字" 的內容. 而 keyboard.rss 判斷 "無此字" 的方式，是看傳回來內容第的一行是否為空字串.
+			以這點而言，Dropbox 剛好符合這個特性，所以如果用的就是 Dropbox 的話，topPrefix 可以簡單地
+			設定成
+				http://dl.dropbox.com/u/35344989/hdp_input/ypInput/
+			經過 URLEncode 後的
+				http%3A%2F%2Fdl.dropbox.com%2Fu%2F35344989%2Fhdp_input%2FypInput%2F
+			就可以了，並不需通過 getFile.php 的處理.
 
 範例
 	1. 在原本的 searchVideo.rss 中，將 PPS 搜尋項目中，取得使用者字串輸入部分，
