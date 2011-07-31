@@ -4,6 +4,7 @@
 功能
 	Input methods for HiMedia HD300A/B (and possibly other models)
 	讓海美迪 HD300A/B (或其他可能機種) 可以使用注音、速成、或使用者自訂輸入法來輸入正簡體字
+	自訂的輸入法資料可置於本機或其他網路上可以存取到的位置 (例如: Dropbox)
 
 取得
 	由
@@ -13,7 +14,8 @@
 
 說明
 	使用者可以自訂輸入法，可參考目前現有之英文、注音、與速成輸入法之資料與格式.
-	若要自訂輸入法，可在 ypInput/ 下創建一個目錄，目錄中至少有以下重要檔案:
+	若要自訂輸入法，可在 ypInput/ 下創建一個目錄或是放在網路上可以存取的地方
+	(例如: Dropbox)，而該目錄中至少有以下檔案 (都要用 U8-UNIX 文字檔格式):
 	1. 0-keys.txt
 		這個檔案定義了螢幕上 48 方塊所顯示的字元/字母
 	2. 1-info.txt
@@ -44,36 +46,73 @@
 		正常輸入
 			input = doModalRss("rss_file://./etc/ypInput/keyboard.rss", "mediaDisplay", "search", 0);
 
-		密碼輸入 (以 * 回應)
+		密碼輸入 (以 "*" 回應)
 			input = doModalRss("rss_file://./etc/ypInput/password.rss", "mediaDisplay", "search", 0);
 
 		來取得使用者輸入的字串 (input)
 
 	2. 建立自己的輸入功能網站 (透過網路比較慢些)
 		將 ypInput 裡的 *.php, *.txt, *.rss, 和四個資料目錄放在您所選定的網站目錄下
-		(就不必多一層 "ypInput" 這個目錄了)
-		然後在 *.rss 的 <onEnter> ... </onEnter> 區段的一開始，設定
-			isOnline = 1;
-		還有把 allFileRemote 設定成您網站的位址，例如:
-			allFileRemote = "http://input.your.site/your.directory/getFile.php?file=";
-		即可在 menu.rss 或其他地方使用
+		(可以不必多一層 "ypInput" 這個目錄) 即可在 menu.rss 或其他地方使用
 
 		正常輸入
-			input = doModalRss("http://input.your.site/your.directory/keyboard.rss", "mediaDisplay", "search", 0);
+			input = doModalRss("http://your.site/your.dir/getFile.php?file=keyboard.rss", "mediaDisplay", "search", 0);
 
-		密碼輸入 (以 * 回應)
-			input = doModalRss("http://input.your.site/your.directory/password.rss", "mediaDisplay", "search", 0);
+		密碼輸入 (以 "*" 回應)
+			input = doModalRss("http://your.site/your.dir/getFile.php?file=password.rss", "mediaDisplay", "search", 0);
 
-		來取得使用者輸入的字串 (input)
+		來取得使用者輸入的字串 (input).
+		※ 目前已經改成不必去變動 .rss 的內容即可直接放到線上使用 ※
 
 	3. 我直接把這組 code 建立成一個輸入功能網站，有興趣的人可以直接用用看 (透過網路比較慢些)
 		這個網站架設在免費的 web hosting 服務上，所以原則上我不會關掉它，
-		但是免費的服務通常連不上的機率也較高，這點我就無法保證大家能用得順利
+		但是免費的服務連不上的機率也會較高，這點我就無法保證大家能用得順利
 
 		位址在
-			http://input.zzl.org/keyboard.rss
+			http://ims.hostoi.com/ypInput/getFile.php?file=keyboard.rss
 		和
-			http://input.zzl.org/password.rss
+			http://ims.hostoi.com/ypInput/getFile.php?file=password.rss
+
+		※ 原先的 input.zzl.org 被站方認為是違反服務條款而被 ban 掉了 ※
+
+	4. 使用者自訂的輸入法資料放在本機或 Dropbox，配合我所提供的輸入功能網站
+		首先，為了簡單起見，這一版開始固定成 4 個輸入法，使用者可以在使用輸入功能網站的 URL 裡，
+		放進適當的參數，即可用自己自訂的輸入法來進行輸入，以下分別說明輸入法資料放在本機上和
+		Dropbox 上的情形. 在此假設我們要把第三個輸入法設成自己本機上的，而第四個是放在
+		Dropbox 的 public 目錄裡.
+		(0) 自訂輸入法的參數是 p1, p2, p3, p4 四個，分別對應到四個輸入法. 參數格式是
+				pN=isOnline,topPrefix,imPrefix
+			isOnline 表示資料檔案在本機中 (0) 或在網路上 (1)
+			topPrefix 是資料檔案最上層的前置字串
+			imPrefix 是這個輸入法資料的目錄
+		(1) 把 p3 設定成自己本機上的 /usr/local/bin/etc/ypInput 下的 4-PhoeneticCHT (注音正體)
+				p3=0,./etc/ypInput/,4-PhoneticCHT
+		(2) 把 p4 設定成 Dropbox 的 public 目錄裡的資料 (這個有點複雜)
+			a. 假設是 Dropbox 的這個公開目錄
+					http://dl.dropbox.com/u/35344989/hdp_input/ypInput/
+				然後我們要用
+					6-CJFastCHT
+			b. 因為要透過輸入功能網站來存取，所以先做一個 URL 當 topPrefix
+					http://ims.hostoi.com/ypInput/getFile.php?file=http://dl.dropbox.com/u/35344989/hdp_input/ypInput/
+			c. 告訴 getFile.php 說這個輸入法的檔案資料不在 ims.hostoi.com 的 local，加上 remote=1
+					http://ims.hostoi.com/ypInput/getFile.php?remote=1&file=http://dl.dropbox.com/u/35344989/hdp_input/ypInput/
+			d. 因為播放機存取 URL 的特性，所以要把 "&" 改成 "&amp;"
+					http://ims.hostoi.com/ypInput/getFile.php?remote=1&amp;file=http://dl.dropbox.com/u/35344989/hdp_input/ypInput/
+			e. 然後因為要放進另一個 URL 中，所以進行一次 URLEncode 變成
+					http%3A%2F%2Fims.hostoi.com%2FypInput%2FgetFile.php%3Fremote%3D1%26amp%3Bfile%3Dhttp%3A%2F%2Fdl.dropbox.com%2Fu%2F35344989%2Fhdp_input%2FypInput%2F
+			f. 再組出 p4 參數
+					p4=1,http%3A%2F%2Fims.hostoi.com%2FypInput%2FgetFile.php%3Fremote%3D1%26amp%3Bfile%3Dhttp%3A%2F%2Fdl.dropbox.com%2Fu%2F35344989%2Fhdp_input%2FypInput%2F,6-CJFastCHT
+		(3) 組出整個 URL
+				http://ims.hostoi.com/ypInput/getFile.php?file=keyboard.rss&p3=0,./etc/ypInput/,4-PhoneticCHT&p4=1,http%3A%2F%2Fims.hostoi.com%2FypInput%2FgetFile.php%3Fremote%3D1%26amp%3Bfile%3Dhttp%3A%2F%2Fdl.dropbox.com%2Fu%2F35344989%2Fhdp_input%2FypInput%2F,6-CJFastCHT
+		(4) 和步驟 (2)d 一樣，要把 "&" 改成 "&amp;" (有兩個 "&")
+				http://ims.hostoi.com/ypInput/getFile.php?file=keyboard.rss&amp;p3=0,./etc/ypInput/,4-PhoneticCHT&amp;p4=1,http%3A%2F%2Fims.hostoi.com%2FypInput%2FgetFile.php%3Fremote%3D1%26amp%3Bfile%3Dhttp%3A%2F%2Fdl.dropbox.com%2Fu%2F35344989%2Fhdp_input%2FypInput%2F,6-CJFastCHT
+		(5) 這個 URL 就可以拿來放在 menu.rss 裡面用了:
+				input = doModalRss("http://ims.hostoi.com/ypInput/getFile.php?file=keyboard.rss&amp;p3=0,./etc/ypInput/,4-PhoneticCHT&amp;p4=1,http%3A%2F%2Fims.hostoi.com%2FypInput%2FgetFile.php%3Fremote%3D1%26amp%3Bfile%3Dhttp%3A%2F%2Fdl.dropbox.com%2Fu%2F35344989%2Fhdp_input%2FypInput%2F,6-CJFastCHT", "mediaDisplay", "search", 0);
+			這樣一來，播放機就會從 ims.hostoi.com 網站上取得 keyboard.rss 然後
+				p1 是 ims.hostoi.com 上的 1-EnglishLower
+				p2 是 ims.hostoi.com 上的 2-EnglishUpper
+				p3 是本機的 /usr/local/bin/etc/ypInput 裡的 4-PhoneticCHT
+				p4 是在 Dropbox user 35344989 的公開目錄 hdp_input/ypInput 裡的 6-CJFastCHT
 
 範例
 	1. 在原本的 searchVideo.rss 中，將 PPS 搜尋項目中，取得使用者字串輸入部分，
