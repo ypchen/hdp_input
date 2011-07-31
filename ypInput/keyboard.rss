@@ -128,11 +128,18 @@
 		fontSize="16"
 		backgroundColor="-1:-1:-1" foregroundColor="140:140:140">
 		<script>
-			if (isOnline == 1) {
-				"※ 線上: " + getStringArrayAt(imPrefix, (currentPage-1)) + " ※";
+
+			if (currentPage == 0) {
+				msg = "選字";
 			}
 			else {
-				"※ 本機: " + getStringArrayAt(imPrefix, (currentPage-1)) + " ※";
+				msg = getStringArrayAt(imPrefix, (currentPage-1));
+			}
+			if (isOnline == 1) {
+				"※ 線上: " + msg + " ※";
+			}
+			else {
+				"※ 本機: " + msg + " ※";
 			}
 		</script>
 	</text>
@@ -321,7 +328,9 @@
 					itemTitleArrayChar = readStringFromFile(fileChar);
 				}
 
-				if ((itemTitleArrayChar != null) &amp;&amp; (itemTitleArrayChar != "")) {
+				if ((itemTitleArrayChar != null) &amp;&amp;
+					(getStringArrayAt(itemTitleArrayChar, 0) != "")) {
+
 					prevPage           = currentPage;
 					prevItemTitleArray = itemTitleArray;
                     prevInfo           = info;
@@ -370,7 +379,6 @@
 	/* Default: Local */
 	defOnline = 0;
 	defPrefix = "./etc/ypInput/";
-	defRemote = "http://input.zzl.org/getFile.php?file=";
 
 	/* Probably no need to change the following three settings */
 	defLocal  = "/usr/local/etc/dvdplayer/";
@@ -397,9 +405,11 @@
 	imPrefix  = pushBackStringArray(imPrefix, "3-PhoneticCHS");
 	/* P3 End */
 	/* P4 Start */
+	/* P4 ypStart */
 	topOnline = pushBackStringArray(topOnline, defOnline);
 	topPrefix = pushBackStringArray(topPrefix, defPrefix);
-	imPrefix  = pushBackStringArray(imPrefix, "5-CJFastCHS");
+	imPrefix  = pushBackStringArray(imPrefix, "4-PhoneticCHT");
+	/* P4 ypEnd */
 	/* P4 End */
 
 	filenameKeys = "0-keys";
@@ -728,7 +738,9 @@
 					itemTitleArrayChar = readStringFromFile(fileChar);
 				}
 
-				if ((itemTitleArrayChar != null) &amp;&amp; (itemTitleArrayChar != "")) {
+				if ((itemTitleArrayChar != null) &amp;&amp;
+					(getStringArrayAt(itemTitleArrayChar, 0) != "")) {
+
 					prevPage           = currentPage;
 					prevItemTitleArray = itemTitleArray;
 					prevInfo           = info;
