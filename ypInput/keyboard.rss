@@ -346,7 +346,7 @@
 		fontSize="16"
 		backgroundColor="-1:-1:-1" foregroundColor="140:140:140">
 		<script>
-		"[快退/進];[重覆]重覆上個字(母); [信息(" + sendChar + ")]完成一個字; [選時(" + switchIM + ")]切換輸入法";
+		"[快退/進]; [重覆]重覆上個字(母); [信息(" + sendChar + ")]完成一個字; [選時(" + switchIM + ")]切換輸入法";
 		</script>
 	</text>
 
